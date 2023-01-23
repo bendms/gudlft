@@ -1,5 +1,7 @@
+import datetime
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
+
 
 
 def loadClubs():
@@ -11,6 +13,20 @@ def loadCompetitions():
     with open('competitions.json') as comps:
          listOfCompetitions = json.load(comps)['competitions']
          return listOfCompetitions
+     
+def saveClubs(clubs):
+    print("CLUBS", clubs)
+    clubs_to_save_to_json = {"clubs" : []}
+    [clubs_to_save_to_json["clubs"].append(i) for i in clubs]
+    with open('clubs.json','w') as c:
+        json.dump(clubs_to_save_to_json,c)
+    
+def saveCompetitions(competitions):
+    print("COMPETITIONS", competitions)
+    competitions_to_save_to_json = {"competitions" : []}
+    [competitions_to_save_to_json["competitions"].append(i) for i in competitions]
+    with open('competitions.json','w') as comps:
+        json.dump(competitions_to_save_to_json,comps)
 
 app = Flask(__name__)
 app.debug = True
@@ -48,11 +64,26 @@ def showSummary():
 def book(competition,club):
     foundClub = [c for c in clubs if c['name'] == club][0]
     foundCompetition = [c for c in competitions if c['name'] == competition][0]
-    if foundClub and foundCompetition:
-        return render_template('booking.html',club=foundClub,competition=foundCompetition)
+    print("foundCompetition", foundCompetition)
+    print("foundCompetition['date']", foundCompetition['date'])
+    date_of_competition = datetime.datetime.strptime(foundCompetition['date'], '%Y-%m-%d %H:%M:%S')
+    today = datetime.datetime.today()
+    print("today", today)
+    if date_of_competition < today:
+        flash("Sorry, this competition is in the past")
+        return render_template('welcome.html', connected_club=foundClub, club=foundClub, competitions=competitions) 
+    elif int(foundClub['points']) < 1:
+        flash("Sorry, you don't have enough points to book a place")
+        return render_template('welcome.html', connected_club=foundClub, club=foundClub, competitions=competitions)
+    elif int(foundCompetition['numberOfPlaces']) < 1:
+        flash("Sorry, there are no places left for this competition")
+        return render_template('welcome.html', connected_club=foundClub, club=foundClub, competitions=competitions)
     else:
-        flash("Something went wrong-please try again")
-        return render_template('welcome.html', club=club, competitions=competitions)
+        if foundClub and foundCompetition:
+            return render_template('booking.html',club=foundClub,competition=foundCompetition)
+        else:
+            flash("Something went wrong-please try again")
+            return render_template('welcome.html', club=club, competitions=competitions)
 
  
 @app.route('/purchasePlaces',methods=['POST'])
@@ -69,16 +100,24 @@ def purchasePlaces():
     print("PLACESREQUIRED", placesRequired)
     print("CONNECTED_CLUB", connected_club[0])
     print("competition", competition)
-    if int(connected_club[0]['points'])>=placesRequired and placesRequired<=int(competition['numberOfPlaces']):
-        print("Achat autorisé")
-        competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
-        connected_club[0]['points'] = int(connected_club[0]['points'])-placesRequired
-        flash('Great-booking complete!')
-        return render_template('welcome.html', connected_club=connected_club[0], club=club[0], competitions=competitions)
-    elif placesRequired>=12:
+    if placesRequired>=12:
         print('Achat impossible car vous ne pouvez pas acheter plus de 12 places')
         flash('Achat impossible car vous ne pouvez pas acheter plus de 12 places')        
-        return redirect(url_for('purchasePlaces'))
+        return render_template('welcome.html', connected_club=connected_club[0], club=club[0], competitions=competitions)
+    elif placesRequired<=0:
+        print('Achat impossible car vous ne pouvez pas acheter moins de 1 place')
+        flash('Achat impossible car vous ne pouvez pas acheter moins de 1 place')
+        return render_template('welcome.html', connected_club=connected_club[0], club=club[0], competitions=competitions)
+    elif int(connected_club[0]['points'])>=placesRequired and placesRequired<=int(competition['numberOfPlaces']):
+        print("Achat autorisé")
+        competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
+        competition['numberOfPlaces'] = str(competition['numberOfPlaces'])
+        connected_club[0]['points'] = int(connected_club[0]['points'])-placesRequired
+        connected_club[0]['points'] = str(connected_club[0]['points'])
+        saveClubs(clubs)
+        saveCompetitions(competitions)
+        flash('Great-booking complete!')
+        return render_template('welcome.html', connected_club=connected_club[0], club=club[0], competitions=competitions)
     print("=== REQUEST.ARGS ===", request.args)
     print("=== REQUEST.values ===", request.values)
     print("=== REQUEST.FORM['EMAIL'] ===", request.form["email"])
