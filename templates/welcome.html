@@ -16,6 +16,22 @@
        </ul>
     {% endif%}
     Points available: {{connected_club['points']}}
+    <div id="table">
+        <table id="data" class="table table-striped">
+            <thread>
+                <th>Nom du club</th>
+                <th>Nombre de points</th>
+            </thread>
+            <tbody>
+                {% for c in clubs %}
+                <tr>
+                    <td>{{c.name}}</td>
+                    <td>{{c.points}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <h3>Competitions:</h3>
     <ul>
         {% for comp in competitions%}

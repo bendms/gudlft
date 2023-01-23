@@ -71,19 +71,19 @@ def book(competition,club):
     print("today", today)
     if date_of_competition < today:
         flash("Sorry, this competition is in the past")
-        return render_template('welcome.html', connected_club=foundClub, club=foundClub, competitions=competitions) 
+        return render_template('welcome.html', connected_club=foundClub, club=foundClub, competitions=competitions, clubs=clubs) 
     elif int(foundClub['points']) < 1:
         flash("Sorry, you don't have enough points to book a place")
-        return render_template('welcome.html', connected_club=foundClub, club=foundClub, competitions=competitions)
+        return render_template('welcome.html', connected_club=foundClub, club=foundClub, competitions=competitions, clubs=clubs)
     elif int(foundCompetition['numberOfPlaces']) < 1:
         flash("Sorry, there are no places left for this competition")
-        return render_template('welcome.html', connected_club=foundClub, club=foundClub, competitions=competitions)
+        return render_template('welcome.html', connected_club=foundClub, club=foundClub, competitions=competitions, clubs=clubs)
     else:
         if foundClub and foundCompetition:
             return render_template('booking.html',club=foundClub,competition=foundCompetition)
         else:
             flash("Something went wrong-please try again")
-            return render_template('welcome.html', club=club, competitions=competitions)
+            return render_template('welcome.html', club=club, competitions=competitions, clubs=clubs)
 
  
 @app.route('/purchasePlaces',methods=['POST'])
@@ -103,11 +103,11 @@ def purchasePlaces():
     if placesRequired>=12:
         print('Achat impossible car vous ne pouvez pas acheter plus de 12 places')
         flash('Achat impossible car vous ne pouvez pas acheter plus de 12 places')        
-        return render_template('welcome.html', connected_club=connected_club[0], club=club[0], competitions=competitions)
+        return render_template('welcome.html', connected_club=connected_club[0], club=club[0], competitions=competitions, clubs=clubs)
     elif placesRequired<=0:
         print('Achat impossible car vous ne pouvez pas acheter moins de 1 place')
         flash('Achat impossible car vous ne pouvez pas acheter moins de 1 place')
-        return render_template('welcome.html', connected_club=connected_club[0], club=club[0], competitions=competitions)
+        return render_template('welcome.html', connected_club=connected_club[0], club=club[0], competitions=competitions, clubs=clubs)
     elif int(connected_club[0]['points'])>=placesRequired and placesRequired<=int(competition['numberOfPlaces']):
         print("Achat autorisé")
         competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
@@ -117,7 +117,7 @@ def purchasePlaces():
         saveClubs(clubs)
         saveCompetitions(competitions)
         flash('Great-booking complete!')
-        return render_template('welcome.html', connected_club=connected_club[0], club=club[0], competitions=competitions)
+        return render_template('welcome.html', connected_club=connected_club[0], club=club[0], competitions=competitions, clubs=clubs)
     print("=== REQUEST.ARGS ===", request.args)
     print("=== REQUEST.values ===", request.values)
     print("=== REQUEST.FORM['EMAIL'] ===", request.form["email"])
@@ -130,7 +130,7 @@ def purchasePlaces():
     # placesRequired = int(request.form['places'])
     # competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
     # flash('Great-booking complete!')
-    return render_template('welcome.html', connected_club=connected_club, competitions=competitions)
+    return render_template('welcome.html', connected_club=connected_club, competitions=competitions, clubs=clubs)
     # return render_template('welcome.html', connected_club=connected_club, club=club, competitions=competitions)
 
 
