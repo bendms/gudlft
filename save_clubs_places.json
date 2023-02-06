@@ -1,0 +1,32 @@
+{
+    "clubs": [
+        {
+            "name": "Simply Lift",
+            "email": "john@simplylift.co",
+            "points": "13",
+            "places": []
+        },
+        {
+            "name": "Iron Temple",
+            "email": "admin@irontemple.com",
+            "points": "9",
+            "places": [
+                {
+                    "name": "Competition for end of 2023",
+                    "date": "2023-10-22 13:30:00",
+                    "number": 10
+                },
+                {
+                    "name": "Competition for end of 2024",
+                    "date": "2024-10-22 13:30:00",
+                    "number": 10
+                }
+            ]
+        },
+        {
+            "name": "She Lifts",
+            "email": "kate@shelifts.co.uk",
+            "points": "12"
+        }
+    ]
+}
