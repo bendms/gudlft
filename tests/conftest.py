@@ -1,6 +1,4 @@
 import pytest
-
-
 from server import app
 
 
@@ -25,13 +23,3 @@ def saveCompetitions_mocked(competitions):
     [competitions_to_save_to_json["competitions"].append(i) for i in competitions]
     print("competitions_to_save_to_json_in_mock_function", competitions_to_save_to_json)
     return competitions_to_save_to_json
-    
-
-# @pytest.fixture()
-# def app():
-#     app.config["TESTING"] = True
-#     yield app
-        
-# @pytest.fixture()
-# def client(app):
-#     return app.test_client()
