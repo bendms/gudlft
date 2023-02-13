@@ -4,7 +4,7 @@ from locust import HttpUser, between, task
 
 
 class ProjectPerfTest(HttpUser):
-    await_time = between(10, 20)
+    await_time = between(5, 10)
     
     @task
     def index(self):
@@ -26,6 +26,7 @@ class ProjectPerfTest(HttpUser):
             "competition": "Competition for end of 2023",
             "places": 1
         })
-
+        
+    @task
     def logout(self):
         self.client.get("/logout")

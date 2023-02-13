@@ -14,21 +14,6 @@ def loadCompetitions():
     with open('competitions.json') as comps:
          listOfCompetitions = json.load(comps)['competitions']
          return listOfCompetitions
-     
-def saveClubs(clubs):
-    clubs_to_save_to_json = {"clubs" : []}
-    [clubs_to_save_to_json["clubs"].append(i) for i in clubs]
-    with open('clubs.json','w') as c:
-        json.dump(clubs_to_save_to_json,c)
-    print("saveClubs function is called with clubs:", clubs)
-
-    
-def saveCompetitions(competitions):
-    competitions_to_save_to_json = {"competitions" : []}
-    [competitions_to_save_to_json["competitions"].append(i) for i in competitions]
-    with open('competitions.json','w') as comps:
-        json.dump(competitions_to_save_to_json,comps)
-    print("saveCompetitions function is called with competitions:", competitions)
 
 app = Flask(__name__)
 app.debug = True

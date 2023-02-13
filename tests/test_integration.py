@@ -1,6 +1,5 @@
 import datetime
 from server import clubs, competitions
-from tests.conftest import saveClubs_mocked, saveCompetitions_mocked
 
 
 def test_full_customer_usage_login_book_places_and_purchase_places_and_logout(client, mocker):
@@ -34,8 +33,6 @@ def test_full_customer_usage_login_book_places_and_purchase_places_and_logout(cl
         if datetime.datetime.strptime(date_of_competition, '%Y-%m-%d %H:%M:%S')>datetime.datetime.today():
             next_competition = competition
             club = clubs[0]
-            mocker.patch('server.saveClubs', return_value=saveClubs_mocked)
-            mocker.patch('server.saveCompetitions', return_value=saveCompetitions_mocked)
             response = client.post("/purchasePlaces", data={
                 "club": club['name'],
                 "competition": next_competition['name'],
