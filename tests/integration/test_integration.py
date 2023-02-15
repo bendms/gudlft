@@ -2,7 +2,7 @@ import datetime
 from server import clubs, competitions
 
 
-def test_full_customer_usage_login_book_places_and_purchase_places_and_logout(client, mocker):
+def test_full_customer_usage_login_book_places_and_purchase_places_and_logout(client):
     # Access to website
     response = client.get('/')
     assert response.status_code == 200
@@ -44,5 +44,5 @@ def test_full_customer_usage_login_book_places_and_purchase_places_and_logout(cl
     response = client.get('/logout')
     assert response.status_code == 302
     assert b'Redirecting...' in response.data
-        
-        
+
+

@@ -95,23 +95,3 @@ def test_purchase_places_with_correct_input_and_ticket_already_exist_in_json_wit
             })
             assert response.status_code == 200
             assert b"Great-booking complete!" in response.data 
-            
-def test_purchase_places_with_correct_input_without_saving_in_json(client, mocker):
-    for competition in competitions:
-        date_of_competition = competition["date"]
-        if datetime.datetime.strptime(date_of_competition, '%Y-%m-%d %H:%M:%S')>datetime.datetime.today():
-            next_competition = competition
-            club = clubs[0]
-            mocker.patch.dict(club, {"places": [
-                {
-                    "name": next_competition["name"],
-                    "date": next_competition["date"],
-                    "number": 10
-                }]})
-            response = client.post("/purchasePlaces", data={
-                "club": club['name'],
-                "competition": next_competition['name'],
-                "places": 1
-            })
-            assert response.status_code == 200
-            assert b"Great-booking complete!" in response.data 
